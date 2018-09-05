@@ -18,7 +18,7 @@ push: ## Push the image to the container registry
 	# EG: docker tag treedydev:latest gcr.io/chore-bot-demo/devshell
 	docker tag  $(NS)/$(IMAGE_NAME):$(VERSION) \
 	  $(REPO_SERVER)/$(REPO_PROJECT)/$(IMAGE_NAME)
-	docker push $(NS)/$(IMAGE_NAME):$(VERSION)
+	docker push $(REPO_SERVER)/$(REPO_PROJECT)/$(IMAGE_NAME)
 
 run: ## Run the container (starts a shell)
 	docker run -it --rm --name $(CONTAINER_NAME) \
