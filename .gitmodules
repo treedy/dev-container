@@ -1,3 +1,6 @@
 [submodule "dot-vim/bundle/Vundle.vim"]
 	path = dot-vim/bundle/Vundle.vim
 	url = https://github.com/VundleVim/Vundle.vim.git
+[submodule "treedy-dotfiles"]
+	path = treedy-dotfiles
+	url = https://github.com/treedy/treedy-dotfiles
