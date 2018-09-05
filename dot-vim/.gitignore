@@ -1,0 +1,8 @@
+bundle/nerdcommenter/
+bundle/nerdtree/
+bundle/syntastic/
+bundle/vim-airline/
+bundle/vim-colorschemes/
+bundle/vim-fugitive/
+bundle/vundle.vim/
+bundle/YouCompleteMe/
