@@ -34,5 +34,7 @@ compile_ycm:
 	  /bin/bash -c "cd ~/.vim/bundle/YouCompleteMe && \
 	  ./install.py --go-completer --clang-completer --java-completer"
 
+build_clean: Dockerfile ## Build the container based on Dockerfile without cache
+	docker build --no-cache -t $(NS)/$(IMAGE_NAME):$(VERSION) .
 
 default: build
