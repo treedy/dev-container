@@ -11,7 +11,9 @@ REPO_SERVER ?= gcr.io
 REPO_PROJECT ?= chore-bot-demo
 USER_SHELL ?= bash
 
-.PHONY: build push run run_image start compile_ycm build_clean
+RUN_IMAGE ?= $(NS)/$(IMAGE_NAME):$(VERSION)
+
+.PHONY: build push run start compile_ycm build_clean
 
 build: Dockerfile ## Build the container based on Dockerfile
 	docker build -t $(NS)/$(IMAGE_NAME):$(VERSION) .
@@ -25,21 +27,16 @@ push: ## Push the image to the container registry
 run: ## Run the container (starts a shell)
 	docker run -it --rm --name $(CONTAINER_NAME) \
 		$(PORTS) $(VOLUMES) $(ENV) \
-		$(NS)/$(IMAGE_NAME):$(VERSION) $(USER_SHELL)
-
-run_image: ## Run the container from the pushed image (starts a shell)
-	docker run -it --rm --name $(CONTAINER_NAME) \
-		$(PORTS) $(VOLUMES) $(ENV) \
-		$(REPO_SERVER)/$(REPO_PROJECT)/$(IMAGE_NAME) $(USER_SHELL)
+		$(RUN_IMAGE) $(USER_SHELL)
 
 start: ## Start the container. Will not detele when stopped
 	docker run -it --name $(CONTAINER_NAME) \
 		$(PORTS) $(VOLUMES) $(ENV) \
-		$(NS)/$(IMAGE_NAME):$(VERSION) $(USER_SHELL)
+		$(RUN_IMAGE) $(USER_SHELL)
 
 compile_ycm:
-	docker run --rm --name $(CONTAINER_NAME) \
-		$(PORTS) $(VOLUMES) $(ENV) $(NS)/$(IMAGE_NAME):$(VERSION) \
+	docker run --rm --name $(CONTAINER_NAME) \$(NS)/$(IMAGE_NAME):$(VERSION)
+		$(PORTS) $(VOLUMES) $(ENV) $(RUN_IMAGE) \
 		/bin/bash -c "cd ~/.vim/bundle/YouCompleteMe && \
 		./install.py --go-completer --clang-completer --java-completer"
 
