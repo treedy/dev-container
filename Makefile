@@ -34,11 +34,18 @@ start: ## Start the container. Will not detele when stopped
 		$(PORTS) $(VOLUMES) $(ENV) \
 		$(RUN_IMAGE) $(USER_SHELL)
 
+install_vim_plugins:
+	docker run -it --rm --name $(CONTAINER_NAME) \
+		$(PORTS) $(VOLUMES) $(ENV) $(RUN_IMAGE) \
+		vim +PluginInstall +qa
+
 compile_ycm:
-	docker run --rm --name $(CONTAINER_NAME) \$(NS)/$(IMAGE_NAME):$(VERSION)
+	docker run --rm --name $(CONTAINER_NAME) \
 		$(PORTS) $(VOLUMES) $(ENV) $(RUN_IMAGE) \
 		/bin/bash -c "cd ~/.vim/bundle/YouCompleteMe && \
 		./install.py --go-completer --clang-completer --java-completer"
+
+configure_vim: install_vim_plugins compile_ycm ## Install and config vim plugins
 
 build_clean: Dockerfile ## Build the container based on Dockerfile without cache
 	docker build --no-cache -t $(NS)/$(IMAGE_NAME):$(VERSION) .
