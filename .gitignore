@@ -1,3 +1,6 @@
 **/*.swp
 .git
 .cache
+
+# Ignore user make.env files. EG, make.treedy.env
+make.*.env

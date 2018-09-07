@@ -1,4 +1,5 @@
-include make.env
+ENV_FILE ?= make.env
+include $(ENV_FILE)
 
 NS ?= treedy
 VERSION ?= latest
