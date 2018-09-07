@@ -11,7 +11,7 @@ REPO_SERVER ?= gcr.io
 REPO_PROJECT ?= chore-bot-demo
 USER_SHELL ?= bash
 
-.PHONY: build push run start stop rm release
+.PHONY: build push run run_image start compile_ycm build_clean
 
 build: Dockerfile ## Build the container based on Dockerfile
 	docker build -t $(NS)/$(IMAGE_NAME):$(VERSION) .
