@@ -1,42 +1,36 @@
-FROM ubuntu:bionic-20180821 AS base-vim
+FROM ubuntu:bionic-20181112 AS base-utils
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
-  && apt-get upgrade \
-  && apt-get install -y man vim vim-doc vim-scripts # Install base vim \
-  && apt-get autoremove && apt-get autoclean
-
-FROM base-vim AS vim-with-vundle
-RUN apt-get install -y \
-    curl \
-    git \
-  && apt-get autoremove && apt-get autoclean
-
-FROM vim-with-vundle AS ycm-deps
-RUN apt-get install -y \
+  && apt-get upgrade -y \
+  && apt-get install --no-install-recommends -y --force-yes -q \
     build-essential \
+    ca-certificates \
     cmake \
     curl \
     git \
     golang \
+    gnupg \
+    lsb-release \
     man \
     npm \
     openjdk-8-jdk-headless \
     python-dev \
     python3-dev \
-  && apt-get autoremove && apt-get autoclean \
-  && npm install -g typescript
-
-FROM ycm-deps AS treedy-python-dev
-RUN apt-get install -y \
     python3-pip \
+    tmux \
+    vim-nox \
+    vim-doc \
+    vim-scripts \
+    zsh \
   && apt-get autoremove && apt-get autoclean \
+  && npm install -g typescript \
   && pip3 install virtualenvwrapper
-WORKDIR /root
 
-FROM treedy-python-dev AS gcloud-dev
+# Install Google Cloud SDK (gcloud, gsutil, etc.)
 # Install instructions at https://cloud.google.com/sdk/docs/#deb
-RUN apt-get install -y lsb-release \
-  && export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" \
+RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" \
   && echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" \
     >> /etc/apt/sources.list.d/google-cloud-sdk.list \
   && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
@@ -44,6 +38,5 @@ RUN apt-get install -y lsb-release \
   && apt-get update && apt-get install -y google-cloud-sdk \
   && apt-get autoremove && apt-get autoclean
 
-LABEL maintainer="Todd Reedy <todd.reedy+dev@gmail.com>"
-
-# Use https://github.com/jeroenpeeters/docker-ssh for SSH terminal?
+ENV EDITOR vim
+ENV SHELL zsh
