@@ -9,7 +9,7 @@ CONTAINER_NAME ?= ${USER}-$(IMAGE_NAME)
 
 REPO_SERVER ?= gcr.io
 REPO_PROJECT ?= chore-bot-demo
-USER_SHELL ?= bash
+USER_SHELL ?= zsh
 
 RUN_IMAGE ?= $(NS)/$(IMAGE_NAME):$(VERSION)
 

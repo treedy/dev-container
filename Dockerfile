@@ -1,10 +1,16 @@
 FROM ubuntu:bionic-20181112 AS base-utils
 
+# Set shell environments
 ENV DEBIAN_FRONTEND=noninteractive
+ENV EDITOR=vim
+ENV SHELL=zsh
+ENV HOME=/root
 
+#Install dependencies
 RUN apt-get update \
-  && apt-get upgrade -y \
-  && apt-get install --no-install-recommends -y --force-yes -q \
+  && apt-get upgrade --no-install-recommends -y -q \
+  && apt-get install --no-install-recommends -y -q \
+    apt-utils \
     build-essential \
     ca-certificates \
     cmake \
@@ -38,5 +44,20 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" \
   && apt-get update && apt-get install -y google-cloud-sdk \
   && apt-get autoremove && apt-get autoclean
 
-ENV EDITOR vim
-ENV SHELL zsh
+# Install oh-my-zsh
+RUN sh -c \
+  "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
+  || true
+
+# Add dot files here
+COPY vimrc ${HOME}/.vimrc
+COPY plugins.vimrc ${HOME}/.vim/plugins.vimrc
+COPY tmux.conf ${HOME}/.tmux.conf
+COPY zshrc ${HOME}/.zshrc
+
+# Configure vim plugins
+RUN mkdir -p ${HOME}/.vim/bundle \
+  && git clone https://github.com/VundleVim/Vundle.vim.git \
+    ${HOME}/.vim/bundle/Vundle.vim
+RUN vim -E -u NONE -S ${HOME}/.vim/plugins.vimrc +PluginInstall +qa
+
