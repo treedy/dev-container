@@ -1,4 +1,4 @@
-FROM ubuntu:bionic-20181112 AS base-utils
+FROM ubuntu:bionic-20181112
 
 # Set shell environments
 ENV DEBIAN_FRONTEND=noninteractive
@@ -7,7 +7,7 @@ ENV SHELL=zsh
 ENV HOME=/root
 
 #Install dependencies
-RUN apt-get update \
+RUN apt-get update -q \
   && apt-get upgrade --no-install-recommends -y -q \
   && apt-get install --no-install-recommends -y -q \
     apt-utils \
@@ -15,11 +15,14 @@ RUN apt-get update \
     ca-certificates \
     cmake \
     curl \
+    flake8 \
     git \
     golang \
     gnupg \
+    less \
     lsb-release \
     man \
+    maven \
     npm \
     openjdk-8-jdk-headless \
     python-dev \
@@ -47,7 +50,8 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" \
 # Install oh-my-zsh
 RUN sh -c \
   "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
-  || true
+  || true \
+  && chsh -s /usr/bin/zsh root
 
 # Add dot files here
 COPY vimrc ${HOME}/.vimrc
@@ -60,4 +64,3 @@ RUN mkdir -p ${HOME}/.vim/bundle \
   && git clone https://github.com/VundleVim/Vundle.vim.git \
     ${HOME}/.vim/bundle/Vundle.vim
 RUN vim -E -u NONE -S ${HOME}/.vim/plugins.vimrc +PluginInstall +qa
-
