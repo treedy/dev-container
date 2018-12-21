@@ -9,14 +9,14 @@ CONTAINER_NAME ?= ${USER}-$(IMAGE_NAME)
 
 REPO_SERVER ?= gcr.io
 REPO_PROJECT ?= chore-bot-demo
-USER_SHELL ?= zsh
+USER_SHELL ?= zsh -l
 
 RUN_IMAGE ?= $(NS)/$(IMAGE_NAME):$(VERSION)
 
 .PHONY: build push run start compile_ycm build_clean
 
 build: Dockerfile ## Build the container based on Dockerfile
-	docker build -t $(NS)/$(IMAGE_NAME):$(VERSION) .
+	docker build -t $(NS)/$(IMAGE_NAME):$(VERSION) $(BUILD_ARGS) .
 
 push: ## Push the image to the container registry
 	# EG: docker tag treedydev:latest gcr.io/chore-bot-demo/devshell

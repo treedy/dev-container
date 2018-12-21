@@ -3,8 +3,6 @@ FROM ubuntu:bionic-20181112
 # Set shell environments
 ENV DEBIAN_FRONTEND=noninteractive
 ENV EDITOR=vim
-ENV SHELL=zsh
-ENV HOME=/root
 
 #Install dependencies
 RUN apt-get update -q \
@@ -47,20 +45,30 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" \
   && apt-get update && apt-get install -y google-cloud-sdk \
   && apt-get autoremove && apt-get autoclean
 
+# Add current user
+ARG USRID
+ARG USR
+RUN useradd -u $USRID -s /usr/bin/zsh -m $USR
+WORKDIR /home/${USR}
+
+# Add dot files here
+COPY vimrc .vimrc
+COPY plugins.vimrc .vim/plugins.vimrc
+COPY tmux.conf .tmux.conf
+COPY zshrc zshrc
+
+# Change over to the real user
+RUN chown -R $USR:$USR /home/$USR
+USER $USR
+
 # Install oh-my-zsh
 RUN sh -c \
   "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
-  || true \
-  && chsh -s /usr/bin/zsh root
+  || mv .zshrc .zshrc.orig && mv zshrc .zshrc
 
-# Add dot files here
-COPY vimrc ${HOME}/.vimrc
-COPY plugins.vimrc ${HOME}/.vim/plugins.vimrc
-COPY tmux.conf ${HOME}/.tmux.conf
-COPY zshrc ${HOME}/.zshrc
 
 # Configure vim plugins
-RUN mkdir -p ${HOME}/.vim/bundle \
+RUN mkdir -p .vim/bundle \
   && git clone https://github.com/VundleVim/Vundle.vim.git \
-    ${HOME}/.vim/bundle/Vundle.vim
-RUN vim -E -u NONE -S ${HOME}/.vim/plugins.vimrc +PluginInstall +qa
+    .vim/bundle/Vundle.vim
+RUN vim -E -u NONE -S .vim/plugins.vimrc +PluginInstall +qa
