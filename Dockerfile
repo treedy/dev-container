@@ -45,11 +45,7 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" \
   && apt-get update && apt-get install -y google-cloud-sdk \
   && apt-get autoremove && apt-get autoclean
 
-# Add current user
-ARG USRID
-ARG USR
-RUN useradd -u $USRID -s /usr/bin/zsh -m $USR
-WORKDIR /home/${USR}
+WORKDIR /root
 
 # Add dot files here
 COPY vimrc .vimrc
@@ -72,3 +68,8 @@ RUN mkdir -p .vim/bundle \
   && git clone https://github.com/VundleVim/Vundle.vim.git \
     .vim/bundle/Vundle.vim
 RUN vim -E -u NONE -S .vim/plugins.vimrc +PluginInstall +qa
+RUN mkdir new_user_skeleton \
+  && cp -R .oh* .vim* .tmux.conf .zshrc new_user_skeleton/
+
+COPY docker-entry.sh .
+ENTRYPOINT ["/root/docker-entry.sh"]

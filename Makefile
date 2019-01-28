@@ -5,7 +5,7 @@ NS ?= treedy
 VERSION ?= latest
 
 IMAGE_NAME ?= devshell
-CONTAINER_NAME ?= ${USER}-$(IMAGE_NAME)
+CONTAINER_NAME ?= ${USER}-$(IMAGE_NAME)-$$$$
 
 REPO_SERVER ?= gcr.io
 REPO_PROJECT ?= chore-bot-demo
@@ -16,7 +16,7 @@ RUN_IMAGE ?= $(NS)/$(IMAGE_NAME):$(VERSION)
 .PHONY: build push run start compile_ycm build_clean
 
 build: Dockerfile ## Build the container based on Dockerfile
-	docker build -t $(NS)/$(IMAGE_NAME):$(VERSION) $(BUILD_ARGS) .
+	docker build -t $(NS)/$(IMAGE_NAME):$(VERSION) .
 
 push: ## Push the image to the container registry
 	# EG: docker tag treedydev:latest gcr.io/chore-bot-demo/devshell
@@ -27,25 +27,12 @@ push: ## Push the image to the container registry
 run: ## Run the container (starts a shell)
 	docker run -it --rm --name $(CONTAINER_NAME) \
 		$(PORTS) $(VOLUMES) $(ENV) \
-		$(RUN_IMAGE) $(USER_SHELL)
+		$(RUN_IMAGE) ${USER} $(UID)
 
 start: ## Start the container. Will not detele when stopped
 	docker run -it --name $(CONTAINER_NAME) \
 		$(PORTS) $(VOLUMES) $(ENV) \
-		$(RUN_IMAGE) $(USER_SHELL)
-
-install_vim_plugins:
-	docker run -it --rm --name $(CONTAINER_NAME) \
-		$(PORTS) $(VOLUMES) $(ENV) $(RUN_IMAGE) \
-		vim +PluginInstall +qa
-
-compile_ycm:
-	docker run --rm --name $(CONTAINER_NAME) \
-		$(PORTS) $(VOLUMES) $(ENV) $(RUN_IMAGE) \
-		/bin/bash -c "cd ~/.vim/bundle/YouCompleteMe && \
-		./install.py --go-completer --clang-completer --java-completer"
-
-configure_vim: install_vim_plugins compile_ycm ## Install and config vim plugins
+		$(RUN_IMAGE) ${USER} $(UID)
 
 build_clean: Dockerfile ## Build the container based on Dockerfile without cache
 	docker build --no-cache -t $(NS)/$(IMAGE_NAME):$(VERSION) .
