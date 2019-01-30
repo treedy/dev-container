@@ -53,10 +53,6 @@ COPY plugins.vimrc .vim/plugins.vimrc
 COPY tmux.conf .tmux.conf
 COPY zshrc zshrc
 
-# Change over to the real user
-RUN chown -R $USR:$USR /home/$USR
-USER $USR
-
 # Install oh-my-zsh
 RUN sh -c \
   "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
