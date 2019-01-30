@@ -25,8 +25,10 @@ push: ## Push the image to the container registry
 	docker push $(REPO_SERVER)/$(REPO_PROJECT)/$(IMAGE_NAME)
 
 run: ## Run the container (starts a shell)
+	docker volume create root_home 2>/dev/null
+	docker volume create home 2>/dev/null
 	docker run -it --rm --name $(CONTAINER_NAME) \
-		$(PORTS) $(VOLUMES) $(ENV) \
+		$(PORTS) -v root_home:/root -v home:/home $(VOLUMES) $(ENV) \
 		$(RUN_IMAGE) ${USER} $(UID)
 
 start: ## Start the container. Will not detele when stopped

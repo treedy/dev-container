@@ -72,4 +72,7 @@ RUN mkdir new_user_skeleton \
   && cp -R .oh* .vim* .tmux.conf .zshrc new_user_skeleton/
 
 COPY docker-entry.sh .
+
+VOLUME ["/root", "/home"]
+
 ENTRYPOINT ["/root/docker-entry.sh"]
