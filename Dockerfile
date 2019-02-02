@@ -48,24 +48,11 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" \
 WORKDIR /root
 
 # Add dot files here
-COPY vimrc .vimrc
-COPY plugins.vimrc .vim/plugins.vimrc
-COPY tmux.conf .tmux.conf
-COPY zshrc zshrc
-
-# Install oh-my-zsh
-RUN sh -c \
-  "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
-  || mv .zshrc .zshrc.orig && mv zshrc .zshrc
-
-
-# Configure vim plugins
-RUN mkdir -p .vim/bundle \
-  && git clone https://github.com/VundleVim/Vundle.vim.git \
-    .vim/bundle/Vundle.vim
-RUN vim -E -u NONE -S .vim/plugins.vimrc +PluginInstall +qa
-RUN mkdir new_user_skeleton \
-  && cp -R .oh* .vim* .tmux.conf .zshrc new_user_skeleton/
+COPY vimrc new_user_skeleton/.vimrc
+COPY plugins.vimrc new_user_skeleton/.vim/plugins.vimrc
+COPY tmux.conf new_user_skeleton/.tmux.conf
+COPY zshrc new_user_skeleton/.zshrc
+COPY first-run.sh new_user_skeleton/first-run.sh
 
 COPY docker-entry.sh .
 

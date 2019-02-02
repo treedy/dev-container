@@ -94,3 +94,7 @@ set t_Co=256
 
 " Set the color scheme provided by a plugin
 colorscheme twilight256
+
+" YouCompleteMe options
+let g:ycm_autoclose_preview_window_after_completion = 1
+
