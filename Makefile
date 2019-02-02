@@ -25,16 +25,18 @@ push: ## Push the image to the container registry
 	docker push $(REPO_SERVER)/$(REPO_PROJECT)/$(IMAGE_NAME)
 
 run: ## Run the container (starts a shell)
-	docker volume create root_home 2>/dev/null
-	docker volume create home 2>/dev/null
+	docker volume create root_home >/dev/null 2>&1
+	docker volume create home >/dev/null 2>&1
 	docker run -it --rm --name $(CONTAINER_NAME) \
 		$(PORTS) -v root_home:/root -v home:/home $(VOLUMES) $(ENV) \
-		$(RUN_IMAGE) ${USER} $(UID)
+		--hostname=$(IMAGE_NAME) $(RUN_IMAGE) ${USER} $(UID)
 
 start: ## Start the container. Will not detele when stopped
+	docker volume create root_home >/dev/null 2>&1
+	docker volume create home >/dev/null 2>&1
 	docker run -it --name $(CONTAINER_NAME) \
-		$(PORTS) $(VOLUMES) $(ENV) \
-		$(RUN_IMAGE) ${USER} $(UID)
+		$(PORTS) -v root_home:/root -v home:/home $(VOLUMES) $(ENV) \
+		--hostname=$(IMAGE_NAME) $(RUN_IMAGE) ${USER} $(UID)
 
 build_clean: Dockerfile ## Build the container based on Dockerfile without cache
 	docker build --no-cache -t $(NS)/$(IMAGE_NAME):$(VERSION) .
