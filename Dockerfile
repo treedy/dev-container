@@ -52,6 +52,7 @@ ENV DEVSHELL_TOOLS ${DEVSHELL_TOOLS:-/opt/devshell}
 WORKDIR $DEVSHELL_TOOLS
 COPY first-run.sh .
 COPY docker-entry.sh .
+COPY home-dir-dr.sh .
 
 # Add dot files here
 ENV DEVSHELL_SKEL new_user_skeleton
