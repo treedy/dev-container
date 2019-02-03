@@ -10,16 +10,16 @@ FORCE_FIRST_RUN=false
 if ! [ -d "/home/${USR_NAME}" ] ; then
   useradd -u $USR_ID -s $USR_SHELL -m $USR_NAME
   shopt -s dotglob
-  cp -R /root/new_user_skeleton/* /home/${USR_NAME}
+  cp -R /opt/devshell/new_user_skeleton/* /home/${USR_NAME}
   chown -R ${USR_NAME}:${USR_NAME} /home/${USR_NAME}
-  mkdir -p /root/${USR_NAME}/etc
-  cp /etc/{passwd,shadow} /root/${USR_NAME}/etc/
+  mkdir -p /home/${USR_NAME}/.etc
+  cp /etc/{passwd,shadow} /home/${USR_NAME}/.etc/
   FORCE_FIRST_RUN=true
 fi
 
-cp /root/${USR_NAME}/etc/* /etc/
+cp /home/${USR_NAME}/.etc/* /etc/
 if $FORCE_FIRST_RUN ; then
-  su - $USR_NAME -c ./first-run.sh
+  su - $USR_NAME -c /opt/devshell/first-run.sh
 else
   su - $USR_NAME
 fi 

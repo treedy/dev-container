@@ -45,17 +45,22 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" \
   && apt-get update && apt-get install -y google-cloud-sdk \
   && apt-get autoremove && apt-get autoclean
 
-WORKDIR /root
 
-# Add dot files here
-COPY vimrc new_user_skeleton/.vimrc
-COPY plugins.vimrc new_user_skeleton/.vim/plugins.vimrc
-COPY tmux.conf new_user_skeleton/.tmux.conf
-COPY zshrc new_user_skeleton/.zshrc
-COPY first-run.sh new_user_skeleton/first-run.sh
-
+# Helper scripts
+ARG DEVSHELL_TOOLS
+ENV DEVSHELL_TOOLS ${DEVSHELL_TOOLS:-/opt/devshell}
+WORKDIR $DEVSHELL_TOOLS
+COPY first-run.sh .
 COPY docker-entry.sh .
 
-VOLUME ["/root", "/home"]
+# Add dot files here
+ENV DEVSHELL_SKEL new_user_skeleton
+COPY vimrc ${DEVSHELL_SKEL}/.vimrc
+COPY plugins.vimrc ${DEVSHELL_SKEL}/.vim/plugins.vimrc
+COPY tmux.conf ${DEVSHELL_SKEL}/.tmux.conf
+COPY zshrc ${DEVSHELL_SKEL}/.zshrc
 
-ENTRYPOINT ["/root/docker-entry.sh"]
+VOLUME ["/home"]
+
+ENTRYPOINT [ "./docker-entry.sh" ]
+

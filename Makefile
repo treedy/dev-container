@@ -16,7 +16,7 @@ RUN_IMAGE ?= $(NS)/$(IMAGE_NAME):$(VERSION)
 .PHONY: build push run start compile_ycm build_clean
 
 build: Dockerfile ## Build the container based on Dockerfile
-	docker build -t $(NS)/$(IMAGE_NAME):$(VERSION) .
+	docker build -t $(RUN_IMAGE) .
 
 push: ## Push the image to the container registry
 	# EG: docker tag treedydev:latest gcr.io/chore-bot-demo/devshell
@@ -25,17 +25,15 @@ push: ## Push the image to the container registry
 	docker push $(REPO_SERVER)/$(REPO_PROJECT)/$(IMAGE_NAME)
 
 run: ## Run the container (starts a shell)
-	docker volume create root_home >/dev/null 2>&1
 	docker volume create home >/dev/null 2>&1
 	docker run -it --rm --name $(CONTAINER_NAME) \
-		$(PORTS) -v root_home:/root -v home:/home $(VOLUMES) $(ENV) \
+		$(PORTS) -v home:/home $(VOLUMES) $(ENV) \
 		--hostname=$(IMAGE_NAME) $(RUN_IMAGE) ${USER} $(UID)
 
 start: ## Start the container. Will not detele when stopped
-	docker volume create root_home >/dev/null 2>&1
 	docker volume create home >/dev/null 2>&1
 	docker run -it --name $(CONTAINER_NAME) \
-		$(PORTS) -v root_home:/root -v home:/home $(VOLUMES) $(ENV) \
+		$(PORTS) -v home:/home $(VOLUMES) $(ENV) \
 		--hostname=$(IMAGE_NAME) $(RUN_IMAGE) ${USER} $(UID)
 
 build_clean: Dockerfile ## Build the container based on Dockerfile without cache
