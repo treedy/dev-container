@@ -5,14 +5,15 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV EDITOR=vim
 
 #Install dependencies
-RUN apt-get update -q \
-  && apt-get upgrade --no-install-recommends -y -q \
+RUN yes | unminimize \
   && apt-get install --no-install-recommends -y -q \
     apt-utils \
+    bison \
     build-essential \
     ca-certificates \
     cmake \
     curl \
+    file \
     flake8 \
     git \
     golang \
@@ -20,6 +21,8 @@ RUN apt-get update -q \
     less \
     lsb-release \
     man \
+    manpages \
+    manpages-dev \
     maven \
     npm \
     openjdk-8-jdk-headless \
@@ -30,10 +33,12 @@ RUN apt-get update -q \
     vim-nox \
     vim-doc \
     vim-scripts \
+    wget \
     zsh \
   && apt-get autoremove && apt-get autoclean \
   && npm install -g typescript \
-  && pip3 install virtualenvwrapper
+  && pip3 install virtualenvwrapper \
+  && rm -r /var/lib/apt/lists/*
 
 # Install Google Cloud SDK (gcloud, gsutil, etc.)
 # Install instructions at https://cloud.google.com/sdk/docs/#deb

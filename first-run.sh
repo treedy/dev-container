@@ -30,6 +30,8 @@ configure_vim() {
   pushd .vim/bundle/YouCompleteMe
   ./install.py --clang-completer --go-completer --java-completer
   popd
+
+  #TODO(treedy@): Implement https://github.com/Valloric/YouCompleteMe/issues/3074#issuecomment-416791818
 }
 
 echo "Running $0 ..."
